@@ -18,8 +18,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class GenerateTrueRandom {
+	private ArrayList<String> arraylistcontain = new ArrayList<String>();
 	private String htmlParse(String url2) {
 		BufferedReader br = null;
 		StringBuilder getran = new StringBuilder();
@@ -41,7 +43,30 @@ public class GenerateTrueRandom {
 				}
 			}
 		}
+		arraylistcontain = parseString(getran.toString());
 		return getran.toString();
+	}
+	
+	private ArrayList<String> parseString(String a) {
+		arraylistcontain.clear();
+		char c;    
+		String d ="";
+		ArrayList<String> arrli = new ArrayList<String>(); 
+		for (int i =0; i< a.length(); i++){
+			c = a.charAt(i);    
+			if (c != ' '){
+				d +=c;
+
+			} else {
+				arrli.add(d);
+				d = "";
+			}
+		}
+		return arrli;
+	}
+	
+	public ArrayList<String> getArrayList(){
+		return arraylistcontain;
 	}
 	  /**
 	   * This method is used to generate random integers
