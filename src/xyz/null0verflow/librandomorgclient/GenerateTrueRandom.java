@@ -123,10 +123,10 @@ public class GenerateTrueRandom {
 
 	public String QuotaCheck(String ipadrr) {
 		String d = "https://www.random.org/quota/?ip="+ipadrr+"&format=plain";
-		return htmlParse(d);
+		return htmlParse(d).trim();
 	}
 	public String QuotaCheck() {
 		String e = "https://www.random.org/quota/?format=plain";
-		return htmlParse(e);
+		return htmlParse(e).trim();
 	}
 }
