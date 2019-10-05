@@ -20,10 +20,12 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.net.HttpURLConnection;
 
 public class GenerateTrueRandom {
 	private ArrayList<String> arraylistcontain = new ArrayList<String>();
 	private String email;
+	private int statusCode;
 	public GenerateTrueRandom(String email) {
 		this.email = email;
 	}
@@ -35,6 +37,8 @@ public class GenerateTrueRandom {
 			URL url = new URL(url2);
 			URLConnection uc = url.openConnection();
 			uc.addRequestProperty("User-Agent", email);
+			statusCode = ((HttpURLConnection) uc).getResponseCode();
+            System.out.println(statusCode);
 			br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 			String line;
 			while (((line = br.readLine()) != null)) {
@@ -72,6 +76,10 @@ public class GenerateTrueRandom {
 		}
 		return arrli;
 	}
+	
+	public int getStatusCode() {
+		return statusCode;
+	}
 
 	public ArrayList<String> getArrayList(){
 		return arraylistcontain;
@@ -89,6 +97,7 @@ public class GenerateTrueRandom {
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(a);
 		} else {
+			System.out.println("Too many request, wait for 10 mins to a day");
 			return "Too many request, wait for 10 mins to a day";
 		}
 	}
@@ -103,6 +112,7 @@ public class GenerateTrueRandom {
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(b);
 		} else {
+			System.out.println("Too many request, wait for 10 mins to a day");
 			return "Too many request, wait for 10 mins to a day";
 		}	
 	}
@@ -125,6 +135,7 @@ public class GenerateTrueRandom {
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(c);
 		} else {
+			System.out.println("Too many request, wait for 10 mins to a day");
 			return "Too many request, wait for 10 mins to a day";
 		}
 	}
