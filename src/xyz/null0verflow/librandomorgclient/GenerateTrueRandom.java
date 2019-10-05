@@ -30,7 +30,7 @@ public class GenerateTrueRandom {
 		this.email = email;
 	}
 	
-	private String htmlParse(String url2) {
+	private String htmlParse(String url2, boolean checkQuota) {
 		BufferedReader br = null;
 		StringBuilder getran = new StringBuilder();
 		try {
@@ -55,7 +55,9 @@ public class GenerateTrueRandom {
 				}
 			}
 		}
+		if (!checkQuota)
 		arraylistcontain = parseString(getran.toString());
+		
 		return getran.toString();
 	}
 
@@ -95,7 +97,7 @@ public class GenerateTrueRandom {
 	public String getRandomNumber(int totalnumber, int min, int max, int base) {
 		String a = "https://www.random.org/integers/?num="+totalnumber+ "&min="+min +"&max="+max +"&col=1&base="+base+"&format=plain&rnd=new";
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
-			return htmlParse(a);
+			return htmlParse(a, false);
 		} else {
 			System.out.println("Too many request, wait for 10 mins to a day");
 			return "Too many request, wait for 10 mins to a day";
@@ -110,7 +112,7 @@ public class GenerateTrueRandom {
 	public String sequenceRandomGenerator(int min, int max) {
 		String b = "https://www.random.org/sequences/?min="+min+"&max="+max+"&col=1&format=plain&rnd=new";
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
-			return htmlParse(b);
+			return htmlParse(b, false);
 		} else {
 			System.out.println("Too many request, wait for 10 mins to a day");
 			return "Too many request, wait for 10 mins to a day";
@@ -133,7 +135,7 @@ public class GenerateTrueRandom {
 		String uniqueChar = unique ? "on" : "off";
 		String c = "https://www.random.org/strings/?num="+totalString+"&len="+lengthofString +"&digits="+digit+"&upperalpha="+upperalpha+"&loweralpha="+loweralpha+"&unique="+uniqueChar+"&format=plain&rnd=new";
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
-			return htmlParse(c);
+			return htmlParse(c, false);
 		} else {
 			System.out.println("Too many request, wait for 10 mins to a day");
 			return "Too many request, wait for 10 mins to a day";
@@ -142,10 +144,10 @@ public class GenerateTrueRandom {
 
 	public String QuotaCheck(String ipadrr) {
 		String d = "https://www.random.org/quota/?ip="+ipadrr+"&format=plain";
-		return htmlParse(d).trim();
+		return htmlParse(d, true).trim();
 	}
 	public String QuotaCheck() {
 		String e = "https://www.random.org/quota/?format=plain";
-		return htmlParse(e).trim();
+		return htmlParse(e, true).trim();
 	}
 }
