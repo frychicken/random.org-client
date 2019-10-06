@@ -28,6 +28,10 @@ public class GenerateTrueRandom {
 	private int statusCode;
 	public GenerateTrueRandom(String email) {
 		this.email = email;
+		String source ="https://raw.githubusercontent.com/bobdinh139/HostImage/master/lib/currentVersion.txt";
+		if (Integer.parseInt(htmlParse(source, true).trim()) > getVersion()) {
+			System.out.println("New version of the library available, please do update");
+		}
 	}
 	
 	private String htmlParse(String url2, boolean checkQuota) {
@@ -150,4 +154,8 @@ public class GenerateTrueRandom {
 		String e = "https://www.random.org/quota/?format=plain";
 		return htmlParse(e, true).trim();
 	}
+	public int getVersion() {
+		return 3;
+	}
+	
 }
