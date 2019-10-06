@@ -32,6 +32,10 @@ public class GenerateTrueRandom {
 		if (Integer.parseInt(htmlParse(source, true).trim()) > getVersion()) {
 			System.out.println("New version of the library available, please do update");
 		}
+		else {
+			System.out.println("No new updates available");
+
+		}
 	}
 	
 	private String htmlParse(String url2, boolean checkQuota) {
@@ -43,6 +47,9 @@ public class GenerateTrueRandom {
 			uc.addRequestProperty("User-Agent", email);
 			statusCode = ((HttpURLConnection) uc).getResponseCode();
             System.out.println(statusCode);
+            if (statusCode !=200) {
+            	throw new TooManyRequest("Too many request, wait for 10 mins to a day");
+            }
 			br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 			String line;
 			while (((line = br.readLine()) != null)) {
@@ -104,7 +111,12 @@ public class GenerateTrueRandom {
 			return htmlParse(a, false);
 		} else {
 			System.out.println("Too many request, wait for 10 mins to a day");
-			return "Too many request, wait for 10 mins to a day";
+			try {
+				throw new TooManyRequest("Too many request, wait for 10 mins to a day");
+			} catch (TooManyRequest e) {
+				e.printStackTrace();
+			}
+			return "-1";
 		}
 	}
 	/**
@@ -119,7 +131,12 @@ public class GenerateTrueRandom {
 			return htmlParse(b, false);
 		} else {
 			System.out.println("Too many request, wait for 10 mins to a day");
-			return "Too many request, wait for 10 mins to a day";
+			try {
+				throw new TooManyRequest("Too many request, wait for 10 mins to a day");
+			} catch (TooManyRequest e) {
+				e.printStackTrace();
+			}
+			return "-1";
 		}	
 	}
 	/**
@@ -142,7 +159,12 @@ public class GenerateTrueRandom {
 			return htmlParse(c, false);
 		} else {
 			System.out.println("Too many request, wait for 10 mins to a day");
-			return "Too many request, wait for 10 mins to a day";
+			try {
+				throw new TooManyRequest("Too many request, wait for 10 mins to a day");
+			} catch (TooManyRequest e) {
+				e.printStackTrace();
+			}
+			return "-1";
 		}
 	}
 
@@ -155,7 +177,7 @@ public class GenerateTrueRandom {
 		return htmlParse(e, true).trim();
 	}
 	public int getVersion() {
-		return 3;
+		return 4;
 	}
 	
 }
