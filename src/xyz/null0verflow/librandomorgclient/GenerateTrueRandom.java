@@ -37,7 +37,7 @@ public class GenerateTrueRandom {
 
 		}
 	}
-	
+
 	private String htmlParse(String url2, boolean checkQuota) {
 		BufferedReader br = null;
 		StringBuilder getran = new StringBuilder();
@@ -45,11 +45,13 @@ public class GenerateTrueRandom {
 			URL url = new URL(url2);
 			URLConnection uc = url.openConnection();
 			uc.addRequestProperty("User-Agent", email);
-			statusCode = ((HttpURLConnection) uc).getResponseCode();
-            System.out.println(statusCode);
-            if (statusCode !=200) {
-            	throw new TooManyRequest("Too many request, wait for 10 mins to a day");
-            }
+			if (!checkQuota) {
+				statusCode = ((HttpURLConnection) uc).getResponseCode();
+				System.out.println(statusCode);
+				if (statusCode !=200) {
+					throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
+				}
+			}
 			br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 			String line;
 			while (((line = br.readLine()) != null)) {
@@ -67,8 +69,8 @@ public class GenerateTrueRandom {
 			}
 		}
 		if (!checkQuota)
-		arraylistcontain = parseString(getran.toString());
-		
+			arraylistcontain = parseString(getran.toString());
+
 		return getran.toString();
 	}
 
@@ -89,7 +91,7 @@ public class GenerateTrueRandom {
 		}
 		return arrli;
 	}
-	
+
 	public int getStatusCode() {
 		return statusCode;
 	}
@@ -110,9 +112,9 @@ public class GenerateTrueRandom {
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(a, false);
 		} else {
-			System.out.println("Too many request, wait for 10 mins to a day");
+			System.out.println("Too many requests, wait for 10 mins to a day");
 			try {
-				throw new TooManyRequest("Too many request, wait for 10 mins to a day");
+				throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
 			} catch (TooManyRequest e) {
 				e.printStackTrace();
 			}
@@ -130,9 +132,9 @@ public class GenerateTrueRandom {
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(b, false);
 		} else {
-			System.out.println("Too many request, wait for 10 mins to a day");
+			System.out.println("Too many requests, wait for 10 mins to a day");
 			try {
-				throw new TooManyRequest("Too many request, wait for 10 mins to a day");
+				throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
 			} catch (TooManyRequest e) {
 				e.printStackTrace();
 			}
@@ -158,9 +160,9 @@ public class GenerateTrueRandom {
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(c, false);
 		} else {
-			System.out.println("Too many request, wait for 10 mins to a day");
+			System.out.println("Too many requests, wait for 10 mins to a day");
 			try {
-				throw new TooManyRequest("Too many request, wait for 10 mins to a day");
+				throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
 			} catch (TooManyRequest e) {
 				e.printStackTrace();
 			}
@@ -177,7 +179,9 @@ public class GenerateTrueRandom {
 		return htmlParse(e, true).trim();
 	}
 	public int getVersion() {
-		return 4;
+		return 5;
 	}
-	
+
 }
+
+
