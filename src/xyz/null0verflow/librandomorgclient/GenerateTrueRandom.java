@@ -26,13 +26,16 @@ public class GenerateTrueRandom {
 	private ArrayList<String> arraylistcontain = new ArrayList<String>();
 	private String email;
 	private int statusCode;
+	private String output = "";
 	public GenerateTrueRandom(String email) {
 		this.email = email;
 		String source ="https://raw.githubusercontent.com/bobdinh139/HostImage/master/lib/currentVersion.txt";
 		if (Integer.parseInt(htmlParse(source, true).trim()) > getVersion()) {
+			output = "Library update(s) available";
 			System.out.println("New version of the library available, please do update");
 		}
 		else {
+			output = "No new updates available";
 			System.out.println("No new updates available");
 
 		}
@@ -49,12 +52,19 @@ public class GenerateTrueRandom {
 				statusCode = ((HttpURLConnection) uc).getResponseCode();
 				System.out.println(statusCode);
 				if (statusCode !=200) {
+					output = "Too many requests";
 					throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
 				}
 			}
+			long tStart = System.currentTimeMillis();
 			br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
 			String line;
 			while (((line = br.readLine()) != null)) {
+				long tEnd = System.currentTimeMillis();
+				if ((tEnd - tStart)/1000.0 >= (60)) {
+					output = "Operation timed out";
+					throw new TooManyRequest("Operation timed out! Check your internet connection");
+				}
 				getran.append(line+" ");
 			}
 		}catch (Exception e) {
@@ -91,6 +101,10 @@ public class GenerateTrueRandom {
 		}
 		return arrli;
 	}
+	
+	public String getOutput() {
+		return output;
+	}
 
 	public int getStatusCode() {
 		return statusCode;
@@ -112,7 +126,7 @@ public class GenerateTrueRandom {
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(a, false);
 		} else {
-			System.out.println("Too many requests, wait for 10 mins to a day");
+			output = "Too many requests";
 			try {
 				throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
 			} catch (TooManyRequest e) {
@@ -132,7 +146,7 @@ public class GenerateTrueRandom {
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(b, false);
 		} else {
-			System.out.println("Too many requests, wait for 10 mins to a day");
+			output = "Too many requests";
 			try {
 				throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
 			} catch (TooManyRequest e) {
@@ -160,7 +174,7 @@ public class GenerateTrueRandom {
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(c, false);
 		} else {
-			System.out.println("Too many requests, wait for 10 mins to a day");
+			output = "Too many requests";
 			try {
 				throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
 			} catch (TooManyRequest e) {
@@ -179,7 +193,7 @@ public class GenerateTrueRandom {
 		return htmlParse(e, true).trim();
 	}
 	public int getVersion() {
-		return 5;
+		return 6;
 	}
 
 }
