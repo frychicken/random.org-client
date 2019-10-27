@@ -27,7 +27,7 @@ public class GenerateTrueRandom {
 	private String email;
 	private int statusCode;
 	private String output = "";
-	public GenerateTrueRandom(String email) {
+	public GenerateTrueRandom(String email) throws NumberFormatException, TooManyRequest, IOException {
 		this.email = email;
 		String source ="https://raw.githubusercontent.com/bobdinh139/HostImage/master/lib/currentVersion.txt";
 		if (Integer.parseInt(htmlParse(source, true).trim()) > getVersion()) {
@@ -41,43 +41,35 @@ public class GenerateTrueRandom {
 		}
 	}
 
-	private String htmlParse(String url2, boolean checkQuota) {
+	private String htmlParse(String url2, boolean checkQuota) throws TooManyRequest, IOException {
 		BufferedReader br = null;
 		StringBuilder getran = new StringBuilder();
-		try {
-			URL url = new URL(url2);
-			URLConnection uc = url.openConnection();
-			uc.addRequestProperty("User-Agent", email);
-			if (!checkQuota) {
-				statusCode = ((HttpURLConnection) uc).getResponseCode();
-				System.out.println(statusCode);
-				if (statusCode !=200) {
-					output = "Too many requests";
-					throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
-				}
-			}
-			long tStart = System.currentTimeMillis();
-			br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-			String line;
-			while (((line = br.readLine()) != null)) {
-				long tEnd = System.currentTimeMillis();
-				if ((tEnd - tStart)/1000.0 >= (60)) {
-					output = "Operation timed out";
-					throw new TooManyRequest("Operation timed out! Check your internet connection");
-				}
-				getran.append(line+" ");
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		URL url = new URL(url2);
+		URLConnection uc = url.openConnection();
+		uc.addRequestProperty("User-Agent", email);
+		if (!checkQuota) {
+			statusCode = ((HttpURLConnection) uc).getResponseCode();
+			System.out.println(statusCode);
+			if (statusCode !=200) {
+				output = "Too many requests";
+				throw new TooManyRequest("Too many requests, wait for 10 mins to a day");
 			}
 		}
+		long tStart = System.currentTimeMillis();
+		br = new BufferedReader(new InputStreamReader(uc.getInputStream()));
+		String line;
+		while (((line = br.readLine()) != null)) {
+			long tEnd = System.currentTimeMillis();
+			if ((tEnd - tStart)/1000.0 >= (60)) {
+				output = "Operation timed out";
+				throw new TooManyRequest("Operation timed out! Check your internet connection");
+			}
+			getran.append(line+" ");
+		}
+		if (br != null) {
+			br.close();
+		}
+
 		if (!checkQuota)
 			arraylistcontain = parseString(getran.toString());
 
@@ -101,7 +93,7 @@ public class GenerateTrueRandom {
 		}
 		return arrli;
 	}
-	
+
 	public String getOutput() {
 		return output;
 	}
@@ -120,8 +112,10 @@ public class GenerateTrueRandom {
 	 * @param max The maximum number [-1e9,1e9].
 	 * @param base Base of the number 2 | 8 | 10 | 16
 	 * @return string This is a string with random numbers separated with a space
+	 * @throws IOException 
+	 * @throws TooManyRequest 
 	 */
-	public String getRandomNumber(int totalnumber, int min, int max, int base) {
+	public String getRandomNumber(int totalnumber, int min, int max, int base) throws TooManyRequest, IOException {
 		String a = "https://www.random.org/integers/?num="+totalnumber+ "&min="+min +"&max="+max +"&col=1&base="+base+"&format=plain&rnd=new";
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(a, false);
@@ -140,8 +134,10 @@ public class GenerateTrueRandom {
 	 * @param min The minimum number [-1e9,1e9]
 	 * @param max The maximum number [-1e9,1e9].
 	 * @return string This is a string with random sequences separated with a space
+	 * @throws IOException 
+	 * @throws TooManyRequest 
 	 */
-	public String sequenceRandomGenerator(int min, int max) {
+	public String sequenceRandomGenerator(int min, int max) throws TooManyRequest, IOException {
 		String b = "https://www.random.org/sequences/?min="+min+"&max="+max+"&col=1&format=plain&rnd=new";
 		if (Integer.valueOf(QuotaCheck()) >= 0) {
 			return htmlParse(b, false);
@@ -164,8 +160,10 @@ public class GenerateTrueRandom {
 	 * @param lower Determines whether lowercase alphabetic characters (A-Z) are allowed to occur in the strings. 
 	 * @param unique Determines whether the strings picked should be unique (as a series of raffle tickets drawn from a hat) or not (as a series of die rolls). If unique is set to on, then there is the additional constraint that the number of strings requested (num) must be less than or equal to the number of strings that exist with the selected length and characters.
 	 * @return string This is a string with random String separated with a space
+	 * @throws IOException 
+	 * @throws TooManyRequest 
 	 */
-	public String randomStringGenrator(int totalString, int lengthofString, Boolean digitOnorOff, Boolean upper, Boolean lower, Boolean unique) {
+	public String randomStringGenrator(int totalString, int lengthofString, Boolean digitOnorOff, Boolean upper, Boolean lower, Boolean unique) throws TooManyRequest, IOException {
 		String digit = digitOnorOff ? "on" : "off";
 		String upperalpha = upper ? "on" : "off";
 		String loweralpha = lower ? "on" : "off";
@@ -184,16 +182,16 @@ public class GenerateTrueRandom {
 		}
 	}
 
-	public String QuotaCheck(String ipadrr) {
+	public String QuotaCheck(String ipadrr) throws TooManyRequest, IOException {
 		String d = "https://www.random.org/quota/?ip="+ipadrr+"&format=plain";
 		return htmlParse(d, true).trim();
 	}
-	public String QuotaCheck() {
+	public String QuotaCheck() throws TooManyRequest, IOException {
 		String e = "https://www.random.org/quota/?format=plain";
 		return htmlParse(e, true).trim();
 	}
 	public int getVersion() {
-		return 6;
+		return 7;
 	}
 
 }
